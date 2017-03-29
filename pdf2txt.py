@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 import requests
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -18,18 +17,24 @@ import json
 import re
 import MySQLdb
 import db
+import sys
+import inverted
+reload(sys)
+sys.setdefaultencoding('utf-8')
 #os.chdir(r'F:\test')
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) \
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'}
 
 
-def pdfToTxt(filename):
+def pdfToTxt(filename,urlpath):
     path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/txtlist'
+    filename = filename.replace(' ','')
+    filename = filename.replace('\t','')
     if not os.path.isdir(path):
         os.mkdir(path)
-    txtname = path + '/' + filename + '.txt'
-    path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/pdflist/' + filename + '.pdf'
-    db.insert(filename,path)  #存入数据库
+    txtname = path + '/' + filename.encode('UTF-8') + '.txt'
+    path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/pdflist/' + filename.encode('UTF-8') + '.pdf'
+
 
     fp = open(path, 'rb')
     #来创建一个pdf文档分析器
@@ -41,38 +46,43 @@ def pdfToTxt(filename):
         raise PDFTextExtractionNotAllowed
     else:
         # 创建一个PDF资源管理器对象来存储共赏资源
-        rsrcmgr=PDFResourceManager()
+        rsrcmgr = PDFResourceManager()
         # 设定参数进行分析
-        laparams=LAParams()
+        laparams = LAParams()
         # 创建一个PDF设备对象
         # device=PDFDevice(rsrcmgr)
-        device=PDFPageAggregator(rsrcmgr,laparams=laparams)
+        device = PDFPageAggregator(rsrcmgr, laparams = laparams)
         # 创建一个PDF解释器对象
-        interpreter=PDFPageInterpreter(rsrcmgr,device)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
         # 处理每一页
         for page in PDFPage.create_pages(document):
             interpreter.process_page(page)
             # 接受该页面的LTPage对象
-            layout=device.get_result()
+            layout = device.get_result()
             for x in layout:
-                if(isinstance(x,LTTextBoxHorizontal)):
-                    with open(txtname,'a') as f:
-                        f.write(x.get_text().encode('utf-8')+'\n')
+                if (isinstance(x, LTTextBoxHorizontal)):
+                    with open(txtname, 'a') as f:
+                        f.write(x.get_text().encode('utf-8') + '\n')
+    db.insert(filename,urlpath)  #存入数据库
+    print filename + '\t' + u'已入库，将做倒排索引处理\n'
+    inverted.invertedAPI(filename)
+
+
 def getShanghaiPdf(annoucement):
 
-
     pdfUrl = annoucement['href']
-
     path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/pdflist'
     if not os.path.isdir(path):
         os.mkdir(path)
-    pdfname = path + '/'  + annoucement.get_text() + '.pdf'
+    pdfname = path + '/'  + annoucement.get_text().encode('utf-8') + '.pdf'
+    pdfname = pdfname.replace(' ','')
+    pdfname = pdfname.replace('\t','')
     r = requests.get(pdfUrl,headers=headers)
     print u'正在获取'+annoucement.get_text()
 
     with open(pdfname,"wb") as pdf:
         pdf.write(r.content)
-    pdfToTxt(annoucement.get_text().encode('utf8'))
+    pdfToTxt(annoucement.get_text().encode('utf8'),annoucement['href'])
     # pdfToTxt(annoucement['title']+'.pdf')
     # pdfparser(pdfname)
 
@@ -87,18 +97,20 @@ def getNewestAnnoucement():
     # print soup
     # a = soup.select('dl')
     # print a
-    annoucement1 = soup.find_all(href=re.compile('http://static.sse.com.cn/disclosure'),target=re.compile('_blank'))
+    annoucement1 = soup.find_all(href = re.compile('http://static.sse.com.cn/disclosure'),
+                                 target = re.compile('_blank'))
     num = 0
     for annoucements in annoucement1:
         if num % 2 == 0:
             try:
                 getShanghaiPdf(annoucements)
-            except Exception,e:
-                print Exception,":",e
+            except Exception, e:
+                print Exception, ":", e
 
         num += 1
 
 
-
 getNewestAnnoucement()
 db.disconnect()
+keywordDB.disconnect()
+# os.system('rm -rf ~/pdflist/*')
