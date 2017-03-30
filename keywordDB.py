@@ -54,6 +54,21 @@ def findTxtName(Id):
         if Id in line:
             return line[1]
     return
+# def getTxtId(keyword):
+#     cur.execute(
+#         "SELECT * FROM inverted"
+#     )
+#     lines = cur.fetchall()
+#     for line in lines:
+#         if keyword.decode('UTF8') in line:
+#             str = base64.b64decode(line[2])
+#             return eval(str)
+#     return
+
+def disconnect():
+    cur.close()
+    conn.close()
+
 def getTxtId(keyword):
     cur.execute(
         "SELECT * FROM inverted"
@@ -61,11 +76,20 @@ def getTxtId(keyword):
     lines = cur.fetchall()
     for line in lines:
         if keyword.decode('UTF8') in line:
-            str = base64.b64decode(line[2])
-            return eval(str)
+            result = decode_base64(line[2])
+            # print result
+
+            return eval(result)
     return
 
-def disconnect():
-    cur.close()
-    conn.close()
 
+def decode_base64(data):
+    """Decode base64, padding being optional.
+    :param data: Base64 data as an ASCII byte string
+    :returns: The decoded byte string.
+    """
+    missing_padding = 4 - len(data) % 4
+    if missing_padding:
+        data += b'=' * missing_padding
+    return base64.decodestring(data)
+getTxtId1('保证')

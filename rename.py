@@ -1,13 +1,13 @@
 #coding:utf-8
-import mysql.connector as mariadb
+import MySQLdb
 import time
 
-conn = mariadb.connect(
+conn = MySQLdb.connect(
     host = 'localhost',
     port = 3306,
     user = 'root',
-    password = 'Onlyou+wmnb1',
-    database = 'Shanghai',
+    passwd = '65671500',
+    db = 'Shanghai',
     charset="utf8"
 )
 cur = conn.cursor()
@@ -22,19 +22,23 @@ def renameFile():
 def updateDB(newname,ID):
 
     cur.execute(
-        "update gonggao set Gonggaoming=%s where Id=%d", (newname, ID)
+        "update gonggao set Gonggaoming = %s where Id=%s" , (newname, ID)
     )
     conn.commit()
 def renameDB():
     cur.execute(
         "SELECT * FROM gonggao"
-    )
+)
     lines = cur.fetchall()
     for line in lines:
         filename = line[1]
         filename = filename.replace(' ','')
         filename = filename.replace('\t','')
+        print filename
+        print line[0]
         updateDB(filename,line[0])
     cur.close()
     conn.close()
+
+renameDB()
 

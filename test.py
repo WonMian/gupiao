@@ -11,10 +11,11 @@ import db
 import sys
 from chardet import detect
 import math
+import log
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-str = []
-
-print str
-
+try:
+    print 1+"qwe"+11
+except:
+    log.setLogger('haha').exception("Exception Logged")

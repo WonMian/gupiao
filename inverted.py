@@ -99,6 +99,7 @@ def invertedAPI(filename):
     # documents.setdefault("doc2", doc2)
     path = os.path.abspath(os.path.dirname("inverted.py")) + '/txtlist'
     txtname = path + '/' + filename.encode('UTF-8') + '.txt'
+
     documents = {}
     f = open(txtname).read() #Value
     documents.setdefault(filename.decode('utf-8'), f)
