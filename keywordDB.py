@@ -21,7 +21,7 @@ cur = conn.cursor()
 # cur.execute("CREATE TABLE IF NOT EXISTS \
 # inverted(Id INT PRIMARY KEY AUTO_INCREMENT,\
 #         keyword varchar(255),\
-#         txtID tinytext) "
+#         txtID text) "
 # )
 def insertKeyword(keyword,txtID):
     base64str = base64.b64encode(str(txtID))
@@ -92,4 +92,3 @@ def decode_base64(data):
     if missing_padding:
         data += b'=' * missing_padding
     return base64.decodestring(data)
-getTxtId1('保证')

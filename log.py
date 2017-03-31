@@ -2,8 +2,8 @@
 #coding:utf-8
 
 import logging
-import os
-
+import config
+path = config.path
 
 def setLogger(filename):
     # 创建一个logger,可以考虑如何将它封装
@@ -11,7 +11,7 @@ def setLogger(filename):
     logger.setLevel(logging.DEBUG)
 
     # 创建一个handler，用于写入日志文件
-    fh = logging.FileHandler(os.path.join(os.getcwd(), 'log.txt'))
+    fh = logging.FileHandler(path + '/log.txt'))
     fh.setLevel(logging.DEBUG)
 
     # 再创建一个handler，用于输出到控制台

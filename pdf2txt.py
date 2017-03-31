@@ -7,36 +7,37 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 from pdfminer.pdfinterp import PDFResourceManager
 from pdfminer.pdfinterp import PDFPageInterpreter
-from pdfminer.pdfdevice import PDFDevice
+# from pdfminer.pdfdevice import PDFDevice
 from pdfminer.layout import *
 from pdfminer.converter import PDFPageAggregator
 import os
-import pdb
+# import pdb
 from bs4 import BeautifulSoup
-import json
 import re
-import MySQLdb
 import db
 import sys
 import inverted
+import keywordDB
+import config
 reload(sys)
 sys.setdefaultencoding('utf-8')
 #os.chdir(r'F:\test')
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) \
                     AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'}
-
-
+txtList = db.inDB()  #获取当前已入库的文章
+filenameList = []
+path = config.path
 def pdfToTxt(filename,urlpath):
-    path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/txtlist'
-    filename = filename.replace(' ','')
-    filename = filename.replace('\t','')
-    if not os.path.isdir(path):
-        os.mkdir(path)
-    txtname = path + '/' + filename.encode('UTF-8') + '.txt'
-    path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/pdflist/' + filename.encode('UTF-8') + '.pdf'
+    # filename = filename.replace(' ','')
+    # filename = filename.replace('\t','')
+    txtPath = path + '/txtlistSH'
+    if not os.path.isdir(txtPath):
+        os.mkdir(txtPath)
+    txtname = txtPath + '/' + filename.encode('UTF-8') + '.txt'
+    pdfPath = path + '/pdflist/' + filename.encode('UTF-8') + '.pdf'
 
 
-    fp = open(path, 'rb')
+    fp = open(pdfPath, 'rb')
     #来创建一个pdf文档分析器
     parser = PDFParser(fp)
     #创建一个PDF文档对象存储文档结构
@@ -65,24 +66,32 @@ def pdfToTxt(filename,urlpath):
                         f.write(x.get_text().encode('utf-8') + '\n')
     db.insert(filename,urlpath)  #存入数据库
     print filename + '\t' + u'已入库，将做倒排索引处理\n'
-    inverted.invertedAPI(filename)
+    filenameList.append(filename)
+    # inverted.invertedAPI(filename)
+
 
 
 def getShanghaiPdf(annoucement):
-
     pdfUrl = annoucement['href']
-    path = os.path.abspath(os.path.dirname("pdf2txt.py")) + '/pdflist'
-    if not os.path.isdir(path):
-        os.mkdir(path)
-    pdfname = path + '/'  + annoucement.get_text().encode('utf-8') + '.pdf'
-    pdfname = pdfname.replace(' ','')
-    pdfname = pdfname.replace('\t','')
-    r = requests.get(pdfUrl,headers=headers)
-    print u'正在获取'+annoucement.get_text()
+    pdfPath = path + '/pdflist'
+    if not os.path.isdir(pdfPath):
+        os.mkdir(pdfPath)
+    filename = annoucement.get_text().encode('utf-8')
+    filename = filename.replace(' ','')
+    filename = filename.replace('\t','')
+    if filename in txtList:
+        print filename + 'already in db!\n'
+        return
+    else:
+        pdfname = pdfPath + '/'  + filename + '.pdf'
+        # pdfname = pdfname.replace(' ','')
+        # pdfname = pdfname.replace('\t','')
+        r = requests.get(pdfUrl,headers=headers)
+        print u'正在获取'+annoucement.get_text()
 
-    with open(pdfname,"wb") as pdf:
-        pdf.write(r.content)
-    pdfToTxt(annoucement.get_text().encode('utf8'),annoucement['href'])
+        with open(pdfname,"wb") as pdf:
+            pdf.write(r.content)
+        pdfToTxt(filename,pdfUrl)
     # pdfToTxt(annoucement['title']+'.pdf')
     # pdfparser(pdfname)
 
@@ -112,5 +121,7 @@ def getNewestAnnoucement():
 
 getNewestAnnoucement()
 db.disconnect()
+for filename in filenameList:
+    inverted.invertedAPI(filename)
 keywordDB.disconnect()
-# os.system('rm -rf ~/pdflist/*')
+os.system('rm -rf ' + path + '/pdflist/*')

@@ -1,16 +1,14 @@
 #!/usr/bin/python
 # coding:utf-8
-import os
 import jieba
 import re
 import sys
 import keywordDB
-
+import  config
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
-
-stopWords = open('stopwords.txt', 'r').readlines()
+path = config.path
+stopWords = open(path + '/stopwords.txt', 'r').readlines()
 
 def word_split(text):   #分词
     word_list = []
@@ -59,30 +57,26 @@ def inverted_index(text):   #一篇文本建立倒排索引 word-[(位置，偏�
     return inverted
 
 
-def inverted_index_add(doc_id, doc_index): #倒排索引字典{字段：{文章名：（位置，偏移）}
+def inverted_index_add(doc_id, doc_index): #txtID
 
     for word, locations in doc_index.iteritems():
         # indices = inverted.setdefault(word, {})
         # indices[doc_id] = locations
       #########
         try:
-            txtId = keywordDB.findTxtId(doc_id)  #查找文章名在主表中的id
-            if txtId:
-                txtIdList = keywordDB.getTxtId(word)
-                if txtIdList:
-                    if txtId in txtIdList:
-                        print "%s was already in %s\n" % (doc_id,word)
-                    else:
-                        txtIdList.append(txtId)
-                        keywordDB.updateKeyword(word,txtIdList)
-                        print "updateKeyword:%s\n" % word
+            txtIdList = keywordDB.getTxtId(word)
+            if txtIdList:
+                if doc_id in txtIdList:
+                    print "%s was already in %s\n" % (doc_id,word)
                 else:
-                    listInit = []
-                    listInit.append(txtId)
-                    keywordDB.insertKeyword(word,listInit)
-                    print "insert %s into DB\n " % word
+                    txtIdList.append(doc_id)
+                    keywordDB.updateKeyword(word,txtIdList)
+                    print "updateKeyword:%s\n" % word
             else:
-                print u"I can't find %s's Id in DB！\n " % doc_id
+                listInit = []
+                listInit.append(doc_id)
+                keywordDB.insertKeyword(word,listInit)
+                print "insert %s into DB\n " % word
         except Exception, e:
             print Exception, ":", e
       ##########
@@ -97,13 +91,13 @@ def invertedAPI(filename):
     #
     # documents.setdefault("doc1", doc1)
     # documents.setdefault("doc2", doc2)
-    path = os.path.abspath(os.path.dirname("inverted.py")) + '/txtlist'
-    txtname = path + '/' + filename.encode('UTF-8') + '.txt'
 
-    documents = {}
-    f = open(txtname).read() #Value
-    documents.setdefault(filename.decode('utf-8'), f)
-    for doc_id, text in documents.iteritems():
-        doc_index = inverted_index(text)  #一篇文章的倒排索引
-        inverted_index_add(doc_id, doc_index)
+
+    f = open(path + '/txtlistSH/' + filename.encode('UTF-8') + '.txt').read()  # Value
+    txtID = keywordDB.findTxtId(filename)
+    if txtID:
+        doc_index = inverted_index(f)  # 一篇文章的倒排索引
+        inverted_index_add(txtID, doc_index)
+    else:
+        print u"I can't find %s's Id in DB！\n " % filename
 

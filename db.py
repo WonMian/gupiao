@@ -10,9 +10,9 @@ conn = MySQLdb.connect(
     db = 'Shanghai',
     charset="utf8"
 )
-
-# localtime = time.strftime("%Y-%m-%d",time.localtime()
 cur = conn.cursor()
+localtime = time.strftime("%Y-%m-%d",time.localtime())
+
 #
 # cur.execute("CREATE TABLE IF NOT EXISTS \
 #     gonggao(Id INT PRIMARY KEY AUTO_INCREMENT,\
@@ -24,9 +24,14 @@ def insert(name,urlpath):
     sqli="insert into gonggao(Gonggaoming,Urlpath) values(%s,%s)"
     cur.execute(sqli,(name,urlpath))
     conn.commit()
+def inDB():
+    cur.execute(
+        "SELECT * FROM gonggao"
+    )
+    lines = cur.fetchall()
+    return lines
 
 
 def disconnect():
     cur.close()
     conn.close()
-
