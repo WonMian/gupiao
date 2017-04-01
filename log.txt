@@ -1,0 +1,53 @@
+2017-03-30 11:13:55,930 - log.setLogger.42 - INFO - hello world, i'm log helper in python, may i help you
+2017-03-30 11:13:55,931 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2017-03-30 11:14:49,977 - log.setLogger.42 - INFO - hello world, i'm log helper in python, may i help you
+2017-03-30 11:14:49,978 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2017-03-30 11:17:19,757 - log.setLogger.42 - INFO - 
+There is a Warning in haha
+2017-03-30 11:17:19,757 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+2017-03-30 11:18:16,438 - log.setLogger.31 - INFO - 
+There is a Warning in haha
+
+2017-03-30 11:18:16,438 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2017-03-30 11:19:04,855 - log.setLogger.31 - INFO - There is a Warning in haha
+
+2017-03-30 11:19:04,856 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2017-03-30 11:19:06,451 - log.setLogger.31 - INFO - There is a Warning in haha
+
+2017-03-30 11:19:06,451 - test.<module>.21 - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2017-03-30 11:21:13,862 - log.setLogger.31 - INFO - There is a Warning in haha
+
+
+
+2017-03-30 11:21:13,862 - test.<module>.21 - ERROR - Exception Logged
+
+
+Traceback (most recent call last):
+  File "/Users/wangmian/PycharmProjects/ShanghaiZhengquan/test.py", line 19, in <module>
+    print 1+"qwe"+11
+TypeError: unsupported operand type(s) for +: 'int' and 'str'

@@ -1,6 +1,8 @@
 #coding:utf-8
 import time
 import mysql.connector as mariadb
+import os
+import config
 conn = mariadb.connect(
     host = 'localhost',
     port = 3306,
@@ -9,7 +11,6 @@ conn = mariadb.connect(
     database = 'GUPIAO',
     charset="utf8"
 )
-
 # localtime = time.strftime("%Y-%m-%d",time.localtime()
 cur = conn.cursor()
 def dropTB():
@@ -19,6 +20,8 @@ def dropTB():
     cur.execute(
         "DROP TABLE inverted"
     )
+    os.system("rm -rf /root/txtlistSH/*")
+    os.system("rm -rf /root/pdflist/*")
 def createTB():
     cur.execute("CREATE TABLE  \
        gonggao(Id INT PRIMARY KEY AUTO_INCREMENT,\

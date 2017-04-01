@@ -19,6 +19,7 @@ import sys
 import inverted
 import keywordDB
 import config
+import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 #os.chdir(r'F:\test')
@@ -65,7 +66,8 @@ def pdfToTxt(filename,urlpath):
                     with open(txtname, 'a') as f:
                         f.write(x.get_text().encode('utf-8') + '\n')
     db.insert(filename,urlpath)  #存入数据库
-    print filename + '\t' + u'已入库，将做倒排索引处理\n'
+    localtime = time.strftime("%Y-%m-%d",time.localtime())
+    print localtime + filename + '\t' + u'已入库，将做倒排索引处理\n'
     filenameList.append(filename)
     # inverted.invertedAPI(filename)
 
@@ -79,21 +81,21 @@ def getShanghaiPdf(annoucement):
     filename = annoucement.get_text().encode('utf-8')
     filename = filename.replace(' ','')
     filename = filename.replace('\t','')
-    if filename in txtList:
-        print filename + 'already in db!\n'
-        return
-    else:
-        pdfname = pdfPath + '/'  + filename + '.pdf'
-        # pdfname = pdfname.replace(' ','')
-        # pdfname = pdfname.replace('\t','')
-        r = requests.get(pdfUrl,headers=headers)
-        print u'正在获取'+annoucement.get_text()
+    for list in txtList:
+        if filename.decode('UTF8') in list:
+            print filename + '\talready in db!\n'
+            return
+    pdfname = pdfPath + '/'  + filename + '.pdf'
+    # pdfname = pdfname.replace(' ','')
+    # pdfname = pdfname.replace('\t','')
+    r = requests.get(pdfUrl,headers=headers)
+    print u'正在获取'+annoucement.get_text()
 
-        with open(pdfname,"wb") as pdf:
-            pdf.write(r.content)
-        pdfToTxt(filename,pdfUrl)
-    # pdfToTxt(annoucement['title']+'.pdf')
-    # pdfparser(pdfname)
+    with open(pdfname,"wb") as pdf:
+        pdf.write(r.content)
+    pdfToTxt(filename,pdfUrl)
+# pdfToTxt(annoucement['title']+'.pdf')
+# pdfparser(pdfname)
 
 def getNewestAnnoucement():
     url = 'http://www.sse.com.cn/disclosure/listedinfo/announcement/s_docdatesort_desc_2016openpdf.htm'
@@ -120,8 +122,13 @@ def getNewestAnnoucement():
 
 
 getNewestAnnoucement()
-db.disconnect()
+
 for filename in filenameList:
-    inverted.invertedAPI(filename)
+    try:
+        inverted.invertedAPI(filename)
+    except Exception,e:
+        print Exception,':',e
+
+
 keywordDB.disconnect()
 os.system('rm -rf ' + path + '/pdflist/*')

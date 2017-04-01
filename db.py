@@ -11,9 +11,19 @@ conn = MySQLdb.connect(
     charset="utf8"
 )
 cur = conn.cursor()
-localtime = time.strftime("%Y-%m-%d",time.localtime())
-
+# localtime = time.strftime("%Y-%m-%d",time.localtime())
+# import mysql.connector as mariadb
 #
+# conn = mariadb.connect(
+#     user='root',
+#     password='Onlyou+wmnb1',
+#     database='GUPIAO',
+#     host = 'localhost',
+#     port = 3306,
+#     charset = 'utf8'
+#     )
+# cur = conn.cursor()
+# #
 # cur.execute("CREATE TABLE IF NOT EXISTS \
 #     gonggao(Id INT PRIMARY KEY AUTO_INCREMENT,\
 #     Gonggaoming VARCHAR(255),\
@@ -35,3 +45,4 @@ def inDB():
 def disconnect():
     cur.close()
     conn.close()
+
