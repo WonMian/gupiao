@@ -30,7 +30,9 @@
 # !/usr/bin/env python
 import thread, threading
 import os, sys, time, getopt, MySQLdb
-
+haha = None
+if haha:
+    print 111
 # optmap = {'user': 'root', 'passwd': '65671500', 'host': 'localhost', 'port': 3306, 'db': 'Shanghai', 'use_unicode': True,
 #     'charset': 'utf8'}
 #

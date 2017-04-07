@@ -31,13 +31,13 @@ def updateKeyword(keyword,txtID):
 
 def findTxtId(txtname):
     cur.execute('SELECT Id FROM gonggao WHERE Gonggaoming = %s LIMIT 1', (txtname.decode('UTF8'),))
-    if cur.fetchone:
+    if cur.fetchone():
         return int(cur.fetchone()[0])
     return None
 
 def findTxtName(Id):
     cur.execute( 'SELECT Gonggaoming FROM gonggao where Id = %s LIMIT 1', (Id,) )
-    if cur.fetchone:
+    if cur.fetchone():
         return cur.fetchone()[0]
     return None
 
@@ -75,3 +75,4 @@ def decode_base64(data):
         data += b'=' * missing_padding
     return base64.decodestring(data)
 
+print findTxtId('dasdsa')

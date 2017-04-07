@@ -12,6 +12,7 @@ def invertedNow():
             try:
                 invertedAPI(filename)
                 f.write(filename + '\n')
+                print '已处理' + filename
             except Exception, e:
                 print Exception, ":", e
 invertedNow()
