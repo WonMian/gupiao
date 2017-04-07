@@ -1,22 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import MySQLdb
 import sys
 import base64
-
+import config
 reload(sys)
 
 sys.setdefaultencoding('utf-8')
 
-conn = MySQLdb.connect(
-    host = 'localhost',
-    port = 3306,
-    user = 'root',
-    passwd = '65671500',
-    db = 'Shanghai',
-    charset="utf8"
-)
+conn = config.db()
 cur = conn.cursor()
+
 #
 # cur.execute("CREATE TABLE IF NOT EXISTS \
 # inverted(Id INT PRIMARY KEY AUTO_INCREMENT,\
@@ -35,25 +28,25 @@ def updateKeyword(keyword,txtID):
         "update inverted set txtID=%s where keyword=%s", (base64str, keyword.decode('UTF8'))
     )
     conn.commit()
-def findTxtId(txtname):
-    cur.execute(
-        "SELECT * FROM gonggao"
-    )
-    lines = cur.fetchall()
-    for line in lines:
-        if txtname.decode('UTF8') in line:
 
-            return int(line[0])
-    return
+def findTxtId(txtname):
+    cur.execute('SELECT Id FROM gonggao WHERE Gonggaoming = %s LIMIT 1', (txtname.decode('UTF8'),))
+    return int(cur.fetchone()[0])
+
 def findTxtName(Id):
-    cur.execute(
-        "SELECT * FROM gonggao"
-    )
-    lines = cur.fetchall()
-    for line in lines:
-        if Id in line:
-            return line[1]
+    cur.execute( 'SELECT Gonggaoming FROM gonggao where Id = %s LIMIT 1', (Id,) )
+    return cur.fetchone()[0]
+
+def getTxtId(keyword):
+    cur.execute("SELECT txtID FROM inverted WHERE keyword = %s LIMIT 1",(keyword.decode('UTF8'), ))
+    if cur.fetchone():
+        result = decode_base64(cur.fetchone()[0])
+        return eval(result)
     return
+
+def disconnect():
+    cur.close()
+    conn.close()
 # def getTxtId(keyword):
 #     cur.execute(
 #         "SELECT * FROM inverted"
@@ -61,26 +54,11 @@ def findTxtName(Id):
 #     lines = cur.fetchall()
 #     for line in lines:
 #         if keyword.decode('UTF8') in line:
-#             str = base64.b64decode(line[2])
-#             return eval(str)
+#             result = decode_base64(line[2])
+#             # print result
+#
+#             return eval(result)
 #     return
-
-def disconnect():
-    cur.close()
-    conn.close()
-
-def getTxtId(keyword):
-    cur.execute(
-        "SELECT * FROM inverted"
-    )
-    lines = cur.fetchall()
-    for line in lines:
-        if keyword.decode('UTF8') in line:
-            result = decode_base64(line[2])
-            # print result
-
-            return eval(result)
-    return
 
 
 def decode_base64(data):
@@ -92,3 +70,4 @@ def decode_base64(data):
     if missing_padding:
         data += b'=' * missing_padding
     return base64.decodestring(data)
+

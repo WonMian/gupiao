@@ -66,8 +66,8 @@ def pdfToTxt(filename,urlpath):
                     with open(txtname, 'a') as f:
                         f.write(x.get_text().encode('utf-8') + '\n')
     db.insert(filename,urlpath)  #存入数据库
-    localtime = time.strftime("%Y-%m-%d",time.localtime())
-    print localtime + filename + '\t' + u'已入库，将做倒排索引处理\n'
+    localtime = time.ctime(time.time())
+    print localtime + '\t' + filename + '\t' + u'已入库，将做倒排索引处理\n'
     filenameList.append(filename)
     # inverted.invertedAPI(filename)
 
@@ -122,13 +122,17 @@ def getNewestAnnoucement():
 
 
 getNewestAnnoucement()
-
+f = open(path + '/haveInverted.txt','a+')
 for filename in filenameList:
     try:
         inverted.invertedAPI(filename)
+        localtime = time.strftime("%Y-%m-%d",time.localtime())
+        f.write(localtime + ':' + filename + '\n')
     except Exception,e:
-        print Exception,':',e
-
-
+        print Exception,":",e
+f.close()
 keywordDB.disconnect()
+os.system('rm -rf ' + path + '/pdflist/*')
+
+# keywordDB.disconnect()
 os.system('rm -rf ' + path + '/pdflist/*')

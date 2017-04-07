@@ -21,5 +21,5 @@ def search(query):
         print "Search for '%s':" % (query)
         for doc in doc_set:
             print keywordDB.findTxtName(doc)
-    keywordDB.disconnect()
-search('公司')
+    # keywordDB.disconnect()
+search('合诚')
