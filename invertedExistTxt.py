@@ -4,8 +4,10 @@ from inverted import invertedAPI
 import os
 import config
 def invertedNow():
-    f = open(config.path + '/haveInverted.txt', 'ra+')
+    f = open(config.path + '/haveInverted.txt', 'r+')
     haveInvertedName = f.read()
+    f.close()
+    f = open(config.path + '/haveInverted.txt', 'a+')
 
     for filename in os.listdir(config.path + '/txtlistSH'):
         # for filename in filenameList:
@@ -19,5 +21,6 @@ def invertedNow():
                 print '已处理' + filename
             except Exception, e:
                 print Exception, ":", e
+    f.close()
 
 invertedNow()
