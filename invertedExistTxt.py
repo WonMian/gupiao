@@ -4,7 +4,7 @@ from inverted import invertedAPI
 import os
 import config
 def invertedNow():
-    f = open(config.path + '/haveInverted.txt', 'a+')
+    f = open(config.path + '/haveInverted.txt', 'ra+')
     haveInvertedName = f.readlines()
 
     for filename in os.listdir(config.path + '/txtlistSH'):
