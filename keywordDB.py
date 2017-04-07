@@ -31,18 +31,22 @@ def updateKeyword(keyword,txtID):
 
 def findTxtId(txtname):
     cur.execute('SELECT Id FROM gonggao WHERE Gonggaoming = %s LIMIT 1', (txtname.decode('UTF8'),))
-    return int(cur.fetchone()[0])
+    if cur.fetchone:
+        return int(cur.fetchone()[0])
+    return None
 
 def findTxtName(Id):
     cur.execute( 'SELECT Gonggaoming FROM gonggao where Id = %s LIMIT 1', (Id,) )
-    return cur.fetchone()[0]
+    if cur.fetchone:
+        return cur.fetchone()[0]
+    return None
 
 def getTxtId(keyword):
     cur.execute("SELECT txtID FROM inverted WHERE keyword = %s LIMIT 1",(keyword.decode('UTF8'), ))
     if cur.fetchone():
         result = decode_base64(cur.fetchone()[0])
         return eval(result)
-    return
+    return None
 
 def disconnect():
     cur.close()
