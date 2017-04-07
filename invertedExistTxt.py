@@ -1,3 +1,5 @@
+#! /usr/bin/python
+# -*- coding:UTF8 -*-
 from inverted import invertedAPI
 import os
 import config
@@ -8,11 +10,14 @@ def invertedNow():
     for filename in os.listdir(config.path + '/txtlistSH'):
         # for filename in filenameList:
         filename = filename.replace('.txt', '')
-        if filename not in haveInvertedName:
-            try:
-                invertedAPI(filename)
-                f.write(filename + '\n')
-                print '已处理' + filename
-            except Exception, e:
-                print Exception, ":", e
+        for a in haveInvertedName:
+            if filename in a:
+                try:
+                    invertedAPI(filename)
+                    f.write(filename + '\n')
+                    print '已处理' + filename
+                except Exception, e:
+                    print Exception, ":", e
+            else:
+                print filename + '已经过处理，将不再进行处理'
 invertedNow()
