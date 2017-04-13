@@ -3,6 +3,7 @@
 from inverted import invertedAPI
 import os
 import config
+import time
 def invertedNow():
     f = open(config.path + '/haveInverted.txt', 'r+')
     haveInvertedName = f.read()
@@ -24,4 +25,9 @@ def invertedNow():
                 print Exception, ":", e
     f.close()
 
-invertedNow()
+while 1:
+    count = 1
+    invertedNow()
+    print '\nHave inverted\t' + count + '\ttimes\n'
+    count += 1
+    time.sleep(43200)
