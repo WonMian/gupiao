@@ -120,19 +120,15 @@ def getNewestAnnoucement():
 
         num += 1
 
-
-getNewestAnnoucement()
-f = open(path + '/haveInverted.txt','a+')
-for filename in filenameList:
-    try:
-        inverted.invertedAPI(filename)
-        localtime = time.strftime("%Y-%m-%d",time.localtime())
-        f.write(localtime + ':' + filename + '\n')
-    except Exception,e:
-        print Exception,":",e
-f.close()
-keywordDB.disconnect()
-os.system('rm -rf ' + path + '/pdflist/*')
+while 1:
+    count = 1
+    getNewestAnnoucement()
+    os.system('rm -rf ' + path + '/pdflist/*')
+    count += 1
+    localtime = time.ctime()
+    print localtime + "已完成！"
+    print "\nHave inverted\t" + count + "\ttimes!\n"
+    time.sleep(14400)
 
 # keywordDB.disconnect()
-os.system('rm -rf ' + path + '/pdflist/*')
+
