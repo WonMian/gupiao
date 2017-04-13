@@ -28,6 +28,6 @@ def invertedNow():
 while 1:
     count = 1
     invertedNow()
-    print '\nHave inverted\t' + count + '\ttimes\n'
+    print "\nHave inverted %d times!\n" % count
     count += 1
     time.sleep(43200)

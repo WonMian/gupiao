@@ -124,11 +124,11 @@ while 1:
     count = 1
     getNewestAnnoucement()
     os.system('rm -rf ' + path + '/pdflist/*')
-    count += 1
     localtime = time.ctime()
     print localtime + "已完成！"
-    print "\nHave inverted\t" + count + "\ttimes!\n"
+    print "\nHave inverted %d times!\n" % count
     time.sleep(14400)
+    count += 1
 
 # keywordDB.disconnect()
 
